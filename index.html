@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Jogo Romântico - Corações do Perdão</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to top, #ffdde1, #ee9ca7);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-top: 20px;
+      color: #fff;
+      text-shadow: 1px 1px #c2185b;
+    }
+
+    #gameArea {
+      position: relative;
+      width: 100%;
+      height: 80vh;
+      border: 2px solid #fff;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .heart {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-image: url('https://cdn-icons-png.flaticon.com/512/833/833472.png');
+      background-size: cover;
+      cursor: pointer;
+    }
+
+    #score {
+      font-size: 1.2rem;
+      margin: 10px;
+      color: #fff;
+    }
+
+    #finalMessage {
+      display: none;
+      font-size: 1.5rem;
+      color: #fff;
+      background: #c2185b;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      animation: fadeIn 1s ease-in-out;
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>💘 Corações do Perdão 💘</h1>
+  <div id="score">Corações Apanhados: <span id="heartCount">0</span>/10</div>
+  <div id="gameArea"></div>
+  <div id="finalMessage">Desculpa por tudo… O meu coração pertence-te. Dá-me mais uma chance? 💌</div>
+
+  <script>
+    const gameArea = document.getElementById('gameArea');
+    const heartCountEl = document.getElementById('heartCount');
+    const finalMessage = document.getElementById('finalMessage');
+    let collected = 0;
+    const target = 10;
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * (gameArea.clientWidth - 40) + 'px';
+      heart.style.top = '-50px';
+      gameArea.appendChild(heart);
+
+      let fallSpeed = 2 + Math.random() * 2;
+
+      const fallInterval = setInterval(() => {
+        let currentTop = parseFloat(heart.style.top);
+        heart.style.top = currentTop + fallSpeed + 'px';
+
+        if (currentTop > gameArea.clientHeight) {
+          clearInterval(fallInterval);
+          heart.remove();
+        }
+      }, 20);
+
+      heart.addEventListener('click', () => {
+        collected++;
+        heartCountEl.textContent = collected;
+        heart.remove();
+        clearInterval(fallInterval);
+
+        if (collected >= target) {
+          endGame();
+        }
+      });
+    }
+
+    function endGame() {
+      finalMessage.style.display = 'block';
+    }
+
+    // Criar corações a cada segundo
+    setInterval(() => {
+      if (collected < target) {
+        createHeart();
+      }
+    }, 800);
+  </script>
+
+</body>
+</html>
